@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +13,9 @@ namespace Commandante
 {
     public class Program
     {
+        public static readonly DirectoryInfo AppData =
+            Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Commandante"));
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
