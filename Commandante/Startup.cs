@@ -12,6 +12,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Commandante.Data;
+using Microsoft.AspNetCore.Authentication;
+using Commandante.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Runtime.CompilerServices;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Win32;
 
 namespace Commandante
 {
@@ -24,15 +34,36 @@ namespace Commandante
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddRazorPages();
             services.AddDbContext<CommandanteContext>();
+            services.AddIdentityCore<CommandanteUser>(opt =>
+            {
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequiredLength = 5;
+            }).AddRoles<IdentityRole>().AddEntityFrameworkStores<CommandanteContext>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Program.JwtSecret))
+                };
+                if (Program.JwtSecret == Program.DefaultJwtSecret)
+                    Console.WriteLine("!!!!!!!!!!!!!!!!!!JWT Default Secret is being used. Anyone with access to the code can bypass authentication!!!!!!!!!!!!!!!!!");
+            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -42,7 +73,6 @@ namespace Commandante
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -51,6 +81,7 @@ namespace Commandante
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

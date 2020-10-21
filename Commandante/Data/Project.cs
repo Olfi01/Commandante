@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Commandante.Identity;
+using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -10,8 +12,9 @@ namespace Commandante.Data
     {
         [Key]
         public Guid Id { get; set; }
+        public string OwnerId { get; set; }
+        public CommandanteUser Owner { get; set; }
         public string Name { get; set; }
-        public ProjectType Type { get; set; }
         public List<Instance> Instances { get; set; }
     }
 }
