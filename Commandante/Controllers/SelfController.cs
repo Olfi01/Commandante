@@ -40,7 +40,8 @@ namespace Commandante.Controllers
             {
                 Arguments = $"{serviceName} {filePath} {serviceDirectory} {Pid}",
                 FileName = Program.UpdaterExecutableFilePath,
-                Verb = "runas"
+                Verb = "runas",
+                CreateNoWindow = false
             };
             Process.Start(psi);
             return Ok();
