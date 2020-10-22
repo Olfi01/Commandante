@@ -28,6 +28,6 @@ jobs:
         name: publish-artifact
         path: publish
     - name: Zip
-      run: zip oublish.zip publish
+      run: zip publish.zip publish
     - name: Deploy
-      run: curl -X POST -F 'zip=@test.zip' https://crazypokemondev.de:5000/api/self/update
+      run: curl -X POST -F 'zip=@publish.zip' https://crazypokemondev.de:5000/api/self/update
