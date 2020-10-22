@@ -21,8 +21,9 @@ namespace Commandante
         internal static string JwtSecret = (string)Registry.GetValue(RegistryKeyName, "JwtSecret", DefaultJwtSecret);
         internal static string ServiceName = (string)Registry.GetValue(RegistryKeyName, "ServiceName", null);
         private static readonly string AppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Commandante");
-        public static readonly DirectoryInfo AppData =
-            Directory.CreateDirectory(AppDataPath);
+        public static readonly DirectoryInfo AppData = Directory.CreateDirectory(AppDataPath);
+        private static readonly string LogsPath = Path.Combine(AppDataPath, "Logs");
+        public static readonly DirectoryInfo Logs = Directory.CreateDirectory(LogsPath);
         internal static readonly string UpdaterExecutableFilePath = Path.Combine(AppDataPath, "Updater\\CommandanteUpdater.exe");
 
         public static void Main(string[] args)
@@ -35,11 +36,13 @@ namespace Commandante
                 .UseWindowsService()
                 .ConfigureLogging(log =>
                 {
-                    log.AddFile(Path.Combine(AppDataPath, "Logs\\commandante-{Date}.txt"));
+                    log.AddFile(Path.Combine(LogsPath, "commandante-{Date}.txt"));
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+#if !DEBUG
                     webBuilder.UseUrls("http://localhost:5000;http://crazypokemondev.de:5000;http://88.214.56.92:5000/");
+#endif
                     webBuilder.UseStartup<Startup>();
                 });
     }
