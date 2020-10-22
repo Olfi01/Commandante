@@ -39,7 +39,8 @@ namespace Commandante.Controllers
             ProcessStartInfo psi = new ProcessStartInfo
             {
                 Arguments = $"{serviceName} {filePath} {serviceDirectory} {Pid}",
-                FileName = Program.UpdaterExecutableFilePath
+                FileName = Program.UpdaterExecutableFilePath,
+                Verb = "runas"
             };
             Process.Start(psi);
             return Ok();
