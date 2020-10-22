@@ -33,11 +33,12 @@ namespace Commandante.Controllers
             }
             string filePath = Path.Combine(Program.AppData.FullName, "update.zip");
             string serviceDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+            int Pid = Process.GetCurrentProcess().Id;
             using var stream = new FileStream(filePath, FileMode.Create);
             await zip.CopyToAsync(stream);
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                Arguments = $"{serviceName} {filePath} {serviceDirectory}",
+                Arguments = $"{serviceName} {filePath} {serviceDirectory} {Pid}",
                 FileName = Program.UpdaterExecutableFilePath
             };
             Process.Start(psi);
