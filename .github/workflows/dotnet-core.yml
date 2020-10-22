@@ -1,0 +1,36 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Publish
+      run: dotnet publish -c Release -o publish Commandante
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: publish-artifact
+        path: publish
+    - name: Zip
+      run: zip publish.zip publish/*
+    - name: Login to Deployment Server
+      id: get-token
+      run: 'echo "::set-output name=token::$(curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"${{ secrets.Username }}\", \"password\":\"${{ secrets.Password }}\"}" http://crazypokemondev.de:5000/api/login | jq -r ".token")"'
+    - name: Deploy
+      run: 'curl -X POST -H "Authorization: Bearer ${{ steps.get-token.outputs.token }}" -F "zip=@publish.zip" http://crazypokemondev.de:5000/api/self/update -i'
