@@ -29,5 +29,10 @@ jobs:
         path: publish
     - name: Zip
       run: zip publish.zip publish
+    - name: Login to Deployment Server
+      env: 
+        USERNAME: ${{ secrets.Username }}
+        PASSWORD: ${{ secrets.Password }}
+      run: token = $(curl -X POST -H "Content-Type: application/json" -d '{"username":"$USERNAME", "password":"$PASSWORD"}' http://crazypokemondev.de:5000/api/login | jq '.token')
     - name: Deploy
-      run: curl -X POST -F 'zip=@publish.zip' http://crazypokemondev.de:5000/api/self/update
+      run: curl -X POST -H "Authorization: Bearer $token" -F 'zip=@publish.zip' http://crazypokemondev.de:5000/api/self/update
