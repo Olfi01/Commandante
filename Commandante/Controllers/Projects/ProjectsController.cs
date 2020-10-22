@@ -43,5 +43,21 @@ namespace Commandante.Controllers.Processes
             _logger.LogInformation("User {User} listed all the projects using admin privileges.", HttpContext.User.Identity.Name);
             return await _context.Projects.ToListAsync();
         }
+
+        [Route("register")]
+        [HttpPost]
+        [Authorize]
+        public async Task<Project> Register([FromBody] string name)
+        {
+            Project project = new Project
+            {
+                Name = name,
+                Id = Guid.NewGuid(),
+                OwnerId = HttpContext.User.Identity.Name
+            };
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+            return project;
+        }
     }
 }
