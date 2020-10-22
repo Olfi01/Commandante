@@ -28,7 +28,7 @@ jobs:
         name: publish-artifact
         path: publish
     - name: Zip
-      run: zip publish.zip publish
+      run: zip publish.zip publish/*
     - name: Login to Deployment Server
       id: get-token
       run: 'echo "::set-output name=token::$(curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"${{ secrets.Username }}\", \"password\":\"${{ secrets.Password }}\"}" http://crazypokemondev.de:5000/api/login | jq -r ".token")"'
