@@ -33,4 +33,4 @@ jobs:
       id: get-token
       run: 'curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"${{ secrets.Username }}\", \"password\":\"${{ secrets.Password }}\"}" http://crazypokemondev.de:5000/api/login | jq ".token"'
     - name: Deploy
-      run: 'curl -X POST -H "Authorization: Bearer ${{ steps.get-token.outputs.TOKEN }}" -F "zip=@publish.zip" http://crazypokemondev.de:5000/api/self/update -i'
+      run: 'curl -X POST -H "Authorization: Bearer ${{ steps.get-token.outputs }}" -F "zip=@publish.zip" http://crazypokemondev.de:5000/api/self/update -i'
