@@ -21,8 +21,8 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Publish
-      run: dotnet publish -c Release Commandante
-    #- uses: actions/upload-artifact@v2
-    #  with:
-    #    name: publish-artifact
-    #    path: 
+      run: dotnet publish -c Release -o publish Commandante
+    - uses: actions/upload-artifact@v2
+      with:
+        name: publish-artifact
+        path: publish
