@@ -32,5 +32,6 @@ jobs:
     - name: Login to Deployment Server
       id: get-token
       run: 'token=$(curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"${{ secrets.Username }}\", \"password\":\"${{ secrets.Password }}\"}" http://crazypokemondev.de:5000/api/login | jq ".token")'
+    - run: echo $token
     - name: Deploy
       run: 'curl -X POST -H "Authorization: Bearer $token" -F "zip=@publish.zip" http://crazypokemondev.de:5000/api/self/update -i'
