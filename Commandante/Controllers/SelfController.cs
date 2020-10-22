@@ -38,10 +38,8 @@ namespace Commandante.Controllers
             await zip.CopyToAsync(stream);
             ProcessStartInfo psi = new ProcessStartInfo
             {
-                Arguments = $"{serviceName} {filePath} {serviceDirectory} {Pid}",
-                FileName = Program.UpdaterExecutableFilePath,
-                Verb = "runas",
-                CreateNoWindow = false
+                Arguments = $"{Program.UpdaterExecutableFilePath} {serviceName} {filePath} {serviceDirectory} {Pid}",
+                FileName = "start"
             };
             Process.Start(psi);
             return Ok();
