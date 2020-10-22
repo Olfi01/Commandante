@@ -17,6 +17,9 @@ namespace Commandante.Controllers
     public class SelfController : ControllerBase
     {
         [Authorize(Roles = Roles.Admin)]
+        [HttpPost]
+        [Route("update")]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Update(IFormFile zip)
         {
             if (!System.IO.File.Exists(Program.UpdaterExecutableFilePath))
