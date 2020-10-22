@@ -34,6 +34,7 @@ namespace Commandante.Controllers.Processes
         {
             if (HttpContext.User.HasClaim(c => c.Type == ClaimTypes.Role && c.Value == Roles.Admin))
             {
+                _logger.LogInformation("User {User} listed all the projects using admin privileges.", HttpContext.User.Identity.Name);
                 return await _context.Projects.ToListAsync();
             }
             return await _context.Projects.Where(x => x.Owner.UserName == HttpContext.User.Identity.Name).ToListAsync();
