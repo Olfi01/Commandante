@@ -100,6 +100,15 @@ namespace Commandante.Controllers.Identity
             else return Problem(GetErrorMessage(result));
         }
 
+        [Route("get")]
+        [HttpGet]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<CommandanteUser> GetUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+            return user;
+        }
+
         private static string GetErrorMessage(IdentityResult result)
         {
             return string.Join("\n", result.Errors.Select(x => $"{x.Code}: {x.Description}"));
