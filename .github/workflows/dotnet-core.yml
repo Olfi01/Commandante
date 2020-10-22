@@ -22,7 +22,12 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Publish
       run: dotnet publish -c Release -o publish Commandante
-    - uses: actions/upload-artifact@v2
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
       with:
         name: publish-artifact
         path: publish
+    - name: Zip
+      run: zip oublish.zip publish
+    - name: Deploy
+      run: curl -X POST -F 'zip=@test.zip' https://crazypokemondev.de:5000/api/self/update
