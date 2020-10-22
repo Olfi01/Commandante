@@ -33,6 +33,10 @@ namespace Commandante
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
+                .ConfigureLogging(log =>
+                {
+                    log.AddFile(Path.Combine(AppDataPath, "Logs\\commandante-{Date}.txt"));
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseUrls("http://localhost:5000;http://crazypokemondev.de:5000;http://88.214.56.92:5000/");
